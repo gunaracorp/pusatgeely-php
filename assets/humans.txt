@@ -1,0 +1,33 @@
+/* humans.txt — konvensi standar kredit tim di balik situs.
+   https://humanstxt.org — terbaca manusia & crawler, tidak tampil di UI. */
+
+/* TEAM */
+Founder & Digital Support System: H. Gugun Gunara (Prabu Danling · prabudanling · Santri Angon)
+Co-Founder & Digital Systems: Muhammad Lutfi Azmi (M. Lutfi Azmi)
+Business Owner / Sales Consultant: Sena Sulaeman
+
+/* COMPANIES */
+Design: PT Digital Bisnis Manajemen (hosting & domain) — https://digiman.id
+Management: PT Top Konsultan Internasional — https://topkonsultan.web.id
+Sub-brand: Juragan Website (hosting & domain) — https://juraganwebsite.web.id
+Community: Santri Angon — digagas H. Gugun Gunara (prabudanling)
+
+/* SOCIAL — GUGUN GUNARA (prabudanling) */
+GitHub: https://github.com/prabudanling
+Facebook: https://www.facebook.com/bossdanling
+X: https://x.com/gunzz_krenzz
+Instagram: https://www.instagram.com/prabudanling
+TikTok: https://www.tiktok.com/@gunaracorp
+Threads: https://www.threads.com/@prabudanling
+Reddit: https://www.reddit.com/user/prabudanling/
+
+/* SITE */
+Site: Pusat Geely — pusatgeely.web.id
+Positioning: Konsultan penjualan independen Geely untuk Bogor & Jabodetabek
+Stack: Next.js 16 · React 19 · Tailwind CSS 4 · shadcn/ui · Prisma
+Language: Bahasa Indonesia / English
+Doctype: HTML5
+IDE: Z.ai Code
+
+/* THANKS */
+Master polymath, sage universal, the ultimate problem solver.

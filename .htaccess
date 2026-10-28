@@ -1,0 +1,105 @@
+# ═══════════════════════════════════════════════════════════════
+#  PUSAT GEELY — Apache config for shared hosting
+#  Routing: folder-based for static pages + front controller for
+#  dynamic slugs (artikel/slug, vs/slug, landing slug)
+# ═══════════════════════════════════════════════════════════════
+
+Options -MultiViews +FollowSymLinks
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ── Static file passthrough (images, css, js, pdf, fonts, dll) ──
+    RewriteCond %{REQUEST_URI} \.(css|js|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|pdf|txt|xml|json|map)$ [NC]
+    RewriteRule ^ - [L]
+
+    # ── Existing files & directories passthrough ──
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # ── Dynamic: /artikel/{slug} → /artikel/index.php?slug={slug} ──
+    RewriteRule ^artikel/([a-z0-9\-]+)/?$ /artikel/index.php?slug=$1 [L,QSA]
+
+    # ── Dynamic: /vs/{slug} → /vs/index.php?slug={slug} ──
+    RewriteRule ^vs/([a-z0-9\-]+)/?$ /vs/index.php?slug=$1 [L,QSA]
+
+    # ── Dynamic: /model/{slug} → /model/index.php?slug={slug} ──
+    RewriteRule ^model/([a-z0-9\-]+)/?$ /model/index.php?slug=$1 [L,QSA]
+
+    # ── Dynamic: landing pages (44 slugs) → /landing/index.php?slug={slug} ──
+    #  Cek apakah slug cocok dengan landing page (lihat data/landing-pages.php)
+    RewriteCond %{REQUEST_URI} ^/([a-z0-9\-]+)/?$
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # whitelist handled in /landing/index.php — fallback 404 jika tidak match
+    RewriteRule ^([a-z0-9\-]+)/?$ /landing/index.php?slug=$1 [L,QSA]
+
+    # ── API endpoints passthrough ──
+    # /api/leads, /api/chat, /api/reviews, /api/indexnow — biarkan akses file langsung
+
+    # ── SEO files ──
+    RewriteRule ^sitemap\.xml$ /sitemap.xml.php [L]
+    RewriteRule ^feed\.xml$ /feed.xml.php [L]
+    RewriteRule ^llms\.txt$ /llms.txt.php [L]
+    RewriteRule ^llms-full\.txt$ /llms-full.txt.php [L]
+    RewriteRule ^robots\.txt$ /robots.txt.php [L]
+    RewriteRule ^manifest\.json$ /manifest.json.php [L]
+
+    # ── 404 fallback ──
+    ErrorDocument 404 /404.php
+</IfModule>
+
+# ─────────────────────────────────────────────────────────────────
+#  Security headers
+# ─────────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    # Hanya set HSTS jika sudah HTTPS (jangan di-set saat masih HTTP)
+    # Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ─────────────────────────────────────────────────────────────────
+#  Compression
+# ─────────────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml
+</IfModule>
+
+# ─────────────────────────────────────────────────────────────────
+#  Caching static assets (1 year)
+# ─────────────────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/pdf "access plus 1 month"
+</IfModule>
+
+# ─────────────────────────────────────────────────────────────────
+#  Block dotfiles & sensitive configs
+# ─────────────────────────────────────────────────────────────────
+<FilesMatch "^\.(git|env|htaccess|htpasswd)">
+    Require all denied
+</FilesMatch>
+
+# Block direct access to PHP includes & data files
+RewriteRule ^(includes|data|config\.php) - [F,L]
+
+# Block .db files (SQLite legacy)
+<FilesMatch "\.(db|sqlite|sqlite3)$">
+    Require all denied
+</FilesMatch>
+
+# Default charset
+AddDefaultCharset UTF-8

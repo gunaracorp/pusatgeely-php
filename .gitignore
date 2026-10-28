@@ -1,0 +1,21 @@
+# Runtime storage files (rate-limit logs, WA notif logs)
+storage/rl_*
+storage/wa_notif.log
+storage/*.log
+
+# Local environment overrides
+config.local.php
+.env
+.env.*
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Backup files
+*.bak
+*.orig
+*~
